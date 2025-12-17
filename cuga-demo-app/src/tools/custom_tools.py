@@ -5,8 +5,17 @@ Custom CUGA Tools
 Demonstrates how to create custom LangChain tools for CUGA integration.
 """
 
+import sys
+from pathlib import Path
 from typing import Optional, Type, Any
 from pydantic import BaseModel, Field
+
+# Add project root to path
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
+
+# Import output logger
+from src.utils.output_logger import create_logger
 
 
 class CalculatorInput(BaseModel):
@@ -189,19 +198,29 @@ class DataProcessorTool:
 
 def demo_custom_tools():
     """Demonstrate custom tools."""
+    logger = create_logger("custom_tools")
+    
+    logger.log_section("CUGA Custom Tools Demonstration")
+    logger.log_text("Testing custom LangChain tools for CUGA integration")
+    
     print("\n" + "="*60)
     print("CUGA Custom Tools Demonstration")
     print("="*60)
     
     # Calculator Tool
+    logger.log_section("Example 1: Calculator Tool")
     print("\n\nExample 1: Calculator Tool")
     print("-" * 60)
     calc = CalculatorTool()
-    result = calc._run("(10 + 5) * 2")
-    print(f"Expression: (10 + 5) * 2")
+    expression = "(10 + 5) * 2"
+    result = calc._run(expression)
+    print(f"Expression: {expression}")
     print(f"Result: {result}")
+    logger.log_text(f"**Expression:** `{expression}`")
+    logger.log_text(f"**Result:** {result}")
     
     # Sentiment Analyzer Tool
+    logger.log_section("Example 2: Sentiment Analyzer Tool")
     print("\n\nExample 2: Sentiment Analyzer Tool")
     print("-" * 60)
     sentiment = SentimentAnalyzerTool()
@@ -209,8 +228,11 @@ def demo_custom_tools():
     result = sentiment._run(text)
     print(f"Text: {text}")
     print(f"Analysis: {result}")
+    logger.log_text(f"**Text:** {text}")
+    logger.log_text(f"**Analysis:** {result}")
     
     # Data Processor Tool
+    logger.log_section("Example 3: Data Processor Tool")
     print("\n\nExample 3: Data Processor Tool")
     print("-" * 60)
     processor = DataProcessorTool()
@@ -218,18 +240,34 @@ def demo_custom_tools():
     
     print("Original data:")
     print(data)
+    logger.log_text("**Original data:**")
+    logger.log_code(data, "json")
     
     print("\nOperation: filter (value > 100)")
-    result = processor._run(data, "filter")
-    print(result)
+    result_filter = processor._run(data, "filter")
+    print(result_filter)
+    logger.log_text("**Operation:** filter (value > 100)")
+    logger.log_code(result_filter, "json")
     
     print("\nOperation: aggregate")
-    result = processor._run(data, "aggregate")
-    print(result)
+    result_agg = processor._run(data, "aggregate")
+    print(result_agg)
+    logger.log_text("**Operation:** aggregate")
+    logger.log_code(result_agg, "json")
     
     print("\n" + "="*60)
     print("✓ Custom tools demonstration completed!")
     print("="*60)
+    
+    logger.log_section("Summary")
+    logger.log_text("✓ All 3 custom tools tested successfully")
+    logger.log_list([
+        "Calculator Tool - Mathematical expressions",
+        "Sentiment Analyzer Tool - Text sentiment analysis",
+        "Data Processor Tool - Data transformation operations"
+    ])
+    logger.finalize()
+    print(f"\n[Output saved to: {logger.get_filepath()}]")
 
 
 if __name__ == "__main__":

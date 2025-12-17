@@ -42,6 +42,7 @@ cuga-demo-app/
 ├── requirements.txt                   # Python dependencies
 ├── .env.example                       # Environment variables template
 ├── .gitignore                         # Git ignore rules
+├── output/                            # Generated markdown logs (auto-created)
 ├── config/
 │   ├── settings.toml                  # Main CUGA configuration
 │   ├── modes/
@@ -53,6 +54,9 @@ cuga-demo-app/
 ├── src/
 │   ├── __init__.py
 │   ├── main.py                        # Main application entry point
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   └── output_logger.py           # Output logging utility
 │   ├── agents/
 │   │   ├── __init__.py
 │   │   └── api_agent.py               # API-focused agent
@@ -67,7 +71,8 @@ cuga-demo-app/
 └── docs/
     ├── setup.md                       # Setup instructions
     ├── BUILD_AND_TEST_GUIDE.md        # Build and testing guide
-    └── OLLAMA_SETUP.md                # Ollama configuration guide
+    ├── OLLAMA_SETUP.md                # Ollama configuration guide
+    └── ARCHITECTURE_FLOWCHART.md      # Application architecture diagrams
 ```
 
 ## Quick Start
@@ -402,6 +407,7 @@ CUGA achieves state-of-the-art performance:
 ### Documentation
 - [Ollama Setup Guide](docs/OLLAMA_SETUP.md) - Detailed Ollama configuration
 - [Build & Test Guide](docs/BUILD_AND_TEST_GUIDE.md) - Complete setup and testing instructions
+- [Architecture Flowchart](docs/ARCHITECTURE_FLOWCHART.md) - Visual application logic flow diagrams
 
 ## Contributing
 

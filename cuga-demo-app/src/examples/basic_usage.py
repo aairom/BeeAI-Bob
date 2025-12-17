@@ -18,6 +18,9 @@ from typing import Dict, Any
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
+# Import output logger
+from src.utils.output_logger import create_logger
+
 
 class BasicCUGAExample:
     """Basic CUGA usage examples."""
@@ -275,16 +278,31 @@ class BasicCUGAExample:
             print(f"  Accuracy: {result['accuracy']}")
             print(f"  Description: {result['description']}\n")
     
-    def run_all_examples(self):
+    def run_all_examples(self, logger):
         """Run all basic examples."""
+        logger.log_section("CUGA Basic Usage Examples")
+        
         print("\n" + "="*60)
         print("CUGA Basic Usage Examples")
         print("="*60)
         
-        self.example_1_simple_task()
-        self.example_2_with_parameters()
-        self.example_3_error_handling()
-        self.example_4_multi_step_task()
+        logger.log_section("Example 1: Simple Task")
+        result1 = self.example_1_simple_task()
+        logger.log_result(result1)
+        
+        logger.log_section("Example 2: Task with Parameters")
+        result2 = self.example_2_with_parameters()
+        logger.log_result(result2)
+        
+        logger.log_section("Example 3: Error Handling")
+        result3 = self.example_3_error_handling()
+        logger.log_result(result3)
+        
+        logger.log_section("Example 4: Multi-Step Task")
+        result4 = self.example_4_multi_step_task()
+        logger.log_result(result4)
+        
+        logger.log_section("Example 5: Mode Comparison")
         self.example_5_mode_comparison()
         
         print("\n" + "="*60)
@@ -293,6 +311,11 @@ class BasicCUGAExample:
         print(f"\nTotal examples executed: 5")
         print(f"Successful tasks: {sum(1 for r in self.results if r['status'] == 'success')}")
         print(f"Failed tasks: {sum(1 for r in self.results if r['status'] == 'error')}")
+        
+        logger.log_section("Summary")
+        logger.log_text(f"Total examples executed: 5")
+        logger.log_text(f"Successful tasks: {sum(1 for r in self.results if r['status'] == 'success')}")
+        logger.log_text(f"Failed tasks: {sum(1 for r in self.results if r['status'] == 'error')}")
         
         print("\n✓ All basic examples completed!")
         print("\nNext steps:")
@@ -303,8 +326,11 @@ class BasicCUGAExample:
 
 def main():
     """Main entry point."""
+    logger = create_logger("basic_usage")
     examples = BasicCUGAExample()
-    examples.run_all_examples()
+    examples.run_all_examples(logger)
+    logger.finalize()
+    print(f"\n[Output saved to: {logger.get_filepath()}]")
 
 
 if __name__ == "__main__":

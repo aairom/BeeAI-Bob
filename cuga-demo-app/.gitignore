@@ -22,6 +22,12 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# Output folder (generated markdown logs)
+output/
+*.md
+!README.md
+!docs/*.md
+
 # Virtual Environments
 .env
 .venv

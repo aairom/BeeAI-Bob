@@ -15,6 +15,9 @@ from typing import Dict, Any, List, Optional
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
+# Import output logger
+from src.utils.output_logger import create_logger
+
 
 class CUGAAPIAgent:
     """
@@ -205,14 +208,22 @@ class CUGAAPIAgent:
 
 def demo_api_agent():
     """Demonstrate API agent capabilities."""
+    # Create output logger
+    logger = create_logger("api_agent")
+    
+    logger.log_section("CUGA API Agent Demonstration")
+    logger.log_text("Testing API-focused agent implementation")
+    
     print("\n" + "="*60)
     print("CUGA API Agent Demonstration")
     print("="*60)
     
     # Initialize agent
     agent = CUGAAPIAgent()
+    logger.log_text("✓ Agent initialized")
     
     # Example 1: Account query
+    logger.log_section("Example 1: Account Query")
     print("\n\nExample 1: Account Query")
     print("-" * 60)
     result1 = agent.execute("Get top 2 accounts by revenue")
@@ -220,7 +231,10 @@ def demo_api_agent():
     print(f"  Accounts found: {result1['data']['total_count']}")
     print(f"  Execution time: {result1['execution_time']}")
     
+    logger.log_result(result1)
+    
     # Example 2: Sales query
+    logger.log_section("Example 2: Sales Query")
     print("\n\nExample 2: Sales Query")
     print("-" * 60)
     result2 = agent.execute("Show Q4 2024 revenue breakdown")
@@ -229,19 +243,36 @@ def demo_api_agent():
     print(f"  Growth rate: {result2['data']['growth_rate']}%")
     print(f"  Execution time: {result2['execution_time']}")
     
+    logger.log_result(result2)
+    
     # Show history
+    logger.log_section("Execution History")
     print("\n\nExecution History")
     print("-" * 60)
     history = agent.get_execution_history()
     print(f"Total tasks executed: {len(history)}")
+    
+    history_data = []
     for i, entry in enumerate(history, 1):
         print(f"\n{i}. {entry['task']}")
         print(f"   Status: {entry['result']['status']}")
         print(f"   Time: {entry['result']['execution_time']}")
+        history_data.append({
+            "task": entry['task'],
+            "status": entry['result']['status'],
+            "time": entry['result']['execution_time']
+        })
+    
+    logger.log_data(history_data, "Task History")
     
     print("\n" + "="*60)
     print("✓ API Agent demonstration completed!")
     print("="*60)
+    
+    logger.log_section("Summary")
+    logger.log_text(f"✓ Completed {len(history)} tasks successfully")
+    logger.finalize()
+    print(f"\n[Output saved to: {logger.get_filepath()}]")
 
 
 if __name__ == "__main__":

@@ -20,10 +20,16 @@ from rich.table import Table
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+# Import output logger
+from src.utils.output_logger import create_logger
+
 # Load environment variables
 load_dotenv()
 
 console = Console()
+
+# Create output logger for main script
+logger = create_logger("main")
 
 
 class CUGADemo:
@@ -138,7 +144,7 @@ def cli():
 
 
 @cli.command()
-@click.option("--mode", default="balanced", 
+@click.option("--mode", default="balanced",
               type=click.Choice(["fast", "balanced", "accurate"]),
               help="Reasoning mode")
 @click.option("--task-mode", default="api",
@@ -147,12 +153,20 @@ def cli():
 @click.option("--task", prompt="Enter task", help="Task to execute")
 def run(mode: str, task_mode: str, task: str):
     """Run a single task with CUGA."""
+    logger.log_section("Task Execution", f"Mode: {mode}, Task Mode: {task_mode}")
+    logger.log_text(f"**Task:** {task}")
+    
     demo = CUGADemo(mode=mode, task_mode=task_mode)
     demo.display_config()
     result = demo.execute_task(task)
     
     console.print("\n[bold]Result:[/bold]")
     console.print(result)
+    
+    # Log result
+    logger.log_result(result)
+    logger.finalize()
+    console.print(f"\n[dim]Output saved to: {logger.get_filepath()}[/dim]")
 
 
 @cli.command()
