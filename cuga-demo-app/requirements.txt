@@ -10,6 +10,11 @@ langchain>=0.1.0
 langchain-openai>=0.0.5
 langchain-community>=0.0.20
 
+# Ollama support (works through OpenAI-compatible API)
+# No additional packages needed - uses openai package above
+# Optional: For direct Ollama Python SDK
+# ollama>=0.1.0
+
 # HTTP and API clients
 httpx>=0.25.0
 requests>=2.31.0

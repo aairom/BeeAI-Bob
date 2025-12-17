@@ -14,7 +14,8 @@ This application demonstrates how to integrate and use CUGA for building intelli
 ## Features Demonstrated
 
 ### 1. **Basic CUGA Integration**
-- Setting up CUGA with different LLM providers (OpenAI, watsonx, Azure, OpenRouter)
+- Setting up CUGA with different LLM providers (Ollama, OpenAI, watsonx, Azure, OpenRouter)
+- **NEW: Local LLM support with Ollama** - Run completely free and private!
 - Configuring agent modes and reasoning strategies
 - Managing environment variables and configurations
 
@@ -78,14 +79,49 @@ cuga-demo-app/
 
 ## Quick Start
 
-### Prerequisites
+### Option A: Using Ollama (Recommended - Free & Local!)
 
-- Python 3.12+
-- uv (recommended) or pip
-- Docker/Podman (optional, for sandbox execution)
-- API keys for your chosen LLM provider
+**Perfect for getting started without API costs!**
 
-### Installation
+1. **Install Ollama:**
+   ```bash
+   # Visit https://ollama.ai or use:
+   # macOS: brew install ollama
+   # Linux: curl -fsSL https://ollama.com/install.sh | sh
+   ```
+
+2. **Pull a model:**
+   ```bash
+   ollama pull llama3.2
+   # Or try: phi3, mistral, codellama
+   ```
+
+3. **Setup the demo app:**
+   ```bash
+   cd cuga-demo-app
+   cp .env.example .env
+   ```
+
+4. **Configure for Ollama (edit .env):**
+   ```env
+   OPENAI_API_KEY=ollama
+   OPENAI_BASE_URL=http://localhost:11434/v1
+   AGENT_SETTING_CONFIG="settings.openai.toml"
+   MODEL_NAME=llama3.2
+   ```
+
+5. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+6. **Run it:**
+   ```bash
+   python src/main.py check-setup
+   python src/main.py interactive
+   ```
+
+### Option B: Using Cloud Providers (OpenAI, watsonx, etc.)
 
 1. **Clone and setup:**
    ```bash
@@ -105,6 +141,14 @@ cuga-demo-app/
 
 3. **Configure CUGA:**
    Edit `config/settings.toml` to set your preferred mode and features.
+
+### Prerequisites
+
+- Python 3.12+
+- uv (recommended) or pip
+- **For Ollama**: Ollama installed locally (free!)
+- **For Cloud**: API keys for your chosen LLM provider
+- Docker/Podman (optional, for sandbox execution)
 
 ### Running Examples
 
@@ -131,6 +175,23 @@ python src/agents/hybrid_agent.py
 ## Configuration
 
 ### LLM Provider Setup
+
+#### Ollama (Local - Recommended)
+```env
+OPENAI_API_KEY=ollama
+OPENAI_BASE_URL=http://localhost:11434/v1
+AGENT_SETTING_CONFIG="settings.openai.toml"
+MODEL_NAME=llama3.2
+```
+
+**Benefits:**
+- ✅ Completely free
+- ✅ 100% private - data never leaves your machine
+- ✅ Works offline
+- ✅ No API rate limits
+- ✅ Multiple models available (llama3.2, mistral, phi3, codellama, etc.)
+
+**See [OLLAMA_SETUP.md](docs/OLLAMA_SETUP.md) for detailed instructions.**
 
 #### OpenAI
 ```env
@@ -251,10 +312,21 @@ CUGA achieves state-of-the-art performance:
 
 ## Resources
 
+### CUGA Resources
 - [CUGA GitHub Repository](https://github.com/cuga-project/cuga-agent)
 - [Official Documentation](https://docs.cuga.dev)
 - [Discord Community](https://discord.gg/aH6rAEEW)
 - [Try CUGA Live](https://huggingface.co/spaces/ibm-research/cuga-agent)
+
+### Ollama Resources
+- [Ollama Website](https://ollama.ai)
+- [Ollama GitHub](https://github.com/ollama/ollama)
+- [Ollama Model Library](https://ollama.ai/library)
+- [OpenAI API Compatibility](https://github.com/ollama/ollama/blob/main/docs/openai.md)
+
+### Documentation
+- [Ollama Setup Guide](docs/OLLAMA_SETUP.md) - Detailed Ollama configuration
+- [Build & Test Guide](docs/BUILD_AND_TEST_GUIDE.md) - Complete setup and testing instructions
 
 ## Contributing
 

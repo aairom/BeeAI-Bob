@@ -20,12 +20,13 @@ CUGA (Collaborative Universal Generative Agent) is a state-of-the-art AI agent f
 ### Purpose of This Demo Application
 This demonstration application showcases how to:
 
-1. **Integrate CUGA** with various LLM providers (OpenAI, watsonx, Azure, OpenRouter)
+1. **Integrate CUGA** with various LLM providers (Ollama, OpenAI, watsonx, Azure, OpenRouter)
 2. **Execute Complex Tasks** through natural language instructions
 3. **Implement Custom Tools** via OpenAPI specs, MCP servers, and LangChain
 4. **Switch Between Reasoning Modes** (fast, balanced, accurate) based on task requirements
 5. **Handle Multi-Step Workflows** with automatic task decomposition
 6. **Demonstrate API, Web, and Hybrid Modes** for different use cases
+7. **Run Locally with Ollama** for free, private, and offline AI capabilities
 
 ### Key Use Cases Demonstrated
 
@@ -166,18 +167,57 @@ pip install -r requirements.txt
 
 # 4. Configure environment
 cp .env.example .env
-# Edit .env with your API keys
+# Edit .env with your LLM provider settings
 ```
 
 ### Configuration Setup
 
+#### Option A: Using Ollama (Recommended for Getting Started)
+
+**Step 1: Install Ollama**
+```bash
+# Visit https://ollama.ai and download for your OS
+# Or use package managers:
+# macOS: brew install ollama
+# Linux: curl -fsSL https://ollama.com/install.sh | sh
+```
+
+**Step 2: Start Ollama and Pull a Model**
+```bash
+# Start Ollama service
+ollama serve
+
+# In another terminal, pull a model
+ollama pull llama3.2
+
+# Verify it's running
+curl http://localhost:11434/api/tags
+```
+
+**Step 3: Configure .env for Ollama**
+```env
+# Ollama Configuration (Local, Free, Private)
+OPENAI_API_KEY=ollama
+OPENAI_BASE_URL=http://localhost:11434/v1
+AGENT_SETTING_CONFIG="settings.openai.toml"
+MODEL_NAME=llama3.2
+
+# Application Settings
+APP_MODE=development
+LOG_LEVEL=INFO
+```
+
+#### Option B: Using OpenAI or Other Cloud Providers
+
 Edit `.env` file:
 ```env
-# Choose your LLM provider
+# OpenAI Configuration
 OPENAI_API_KEY=sk-your-key-here
 AGENT_SETTING_CONFIG="settings.openai.toml"
 MODEL_NAME=gpt-4o
 ```
+
+For other providers (watsonx, Azure, OpenRouter), see `.env.example` for configuration options.
 
 Edit `config/settings.toml` for features:
 ```toml
@@ -195,7 +235,27 @@ mode = "api"  # api, web, or hybrid
 python src/main.py check-setup
 ```
 
-Expected output:
+**Expected output with Ollama:**
+```
+╭─────────────────────────────────────╮
+│     CUGA Setup Check                │
+╰─────────────────────────────────────╯
+
+Setup Status
+┏━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+┃ Component      ┃ Status         ┃
+┡━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
+│ LLM Provider   │ Ollama (Local) │
+│ Ollama Service │ ✓ Running      │
+│ Config File    │ ✓              │
+│ .env File      │ ✓              │
+└────────────────┴────────────────┘
+
+✓ Ollama is configured and running!
+Model: llama3.2
+```
+
+**Expected output with cloud providers:**
 ```
 ╭─────────────────────────────────────╮
 │     CUGA Setup Check                │
@@ -521,27 +581,68 @@ Accurate Mode:
 
 ### Common Issues and Solutions
 
-#### Issue 1: Import Errors
+#### Issue 1: Ollama Not Running
+```bash
+# Problem: "Ollama Service: ✗ Not accessible"
+# Solution: Start Ollama service
+ollama serve
+
+# Or check if it's already running
+curl http://localhost:11434/api/tags
+
+# On macOS/Linux with systemd
+systemctl start ollama
+```
+
+#### Issue 2: Ollama Model Not Found
+```bash
+# Problem: "model 'llama3.2' not found"
+# Solution: Pull the model first
+ollama pull llama3.2
+
+# List available models
+ollama list
+
+# Try a different model
+MODEL_NAME=phi3 python src/main.py check-setup
+```
+
+#### Issue 3: Import Errors
 ```bash
 # Solution: Ensure virtual environment is activated
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-#### Issue 2: API Key Not Found
+#### Issue 4: API Key Not Found (Cloud Providers)
 ```bash
 # Solution: Check .env file exists and contains valid keys
 cat .env | grep API_KEY
 ```
 
-#### Issue 3: Configuration Not Loaded
+#### Issue 5: Configuration Not Loaded
 ```bash
 # Solution: Verify config file paths
 ls -la config/settings.toml
 ls -la config/modes/
 ```
 
-#### Issue 4: Tool Not Found
+#### Issue 6: Slow Performance with Ollama
+```bash
+# Solution 1: Use a smaller/faster model
+MODEL_NAME=phi3 python src/main.py interactive
+
+# Solution 2: Use quantized models
+ollama pull llama3.2:8b-q4_0
+
+# Solution 3: Check GPU usage
+ollama ps
+
+# Solution 4: Reduce context in mode configs
+# Edit config/modes/fast.toml and reduce max_tokens
+```
+
+#### Issue 7: Tool Not Found
 ```bash
 # Solution: Check tool registry
 cat config/tools/mcp_servers.yaml
@@ -553,26 +654,36 @@ cat config/tools/mcp_servers.yaml
 
 After testing the demo application:
 
-1. **Explore Advanced Features**
+1. **Start with Ollama (Recommended)**
+   - Install Ollama from https://ollama.ai
+   - Pull a model: `ollama pull llama3.2`
+   - Configure .env for Ollama (see above)
+   - Run: `python src/main.py check-setup`
+   - No API costs, complete privacy!
+
+2. **Explore Advanced Features**
    - Enable memory for learning
    - Try web/hybrid modes
    - Set up custom MCP servers
+   - Experiment with different models
 
-2. **Integrate with Your Systems**
+3. **Integrate with Your Systems**
    - Add your OpenAPI specifications
    - Create custom tools for your domain
    - Configure authentication
 
-3. **Production Deployment**
+4. **Production Deployment**
    - Set up proper logging
    - Configure monitoring
    - Implement rate limiting
    - Add security measures
+   - Consider cloud providers for scale
 
-4. **Join the Community**
+5. **Join the Community**
    - GitHub: [CUGA Repository](https://github.com/cuga-project/cuga-agent)
    - Discord: [Community Chat](https://discord.gg/aH6rAEEW)
    - Try Live: [HuggingFace Space](https://huggingface.co/spaces/ibm-research/cuga-agent)
+   - Ollama: [Documentation](https://github.com/ollama/ollama)
 
 ---
 
@@ -582,15 +693,35 @@ This demo application provides a comprehensive foundation for understanding and 
 
 **Key Takeaways:**
 - ✅ CUGA simplifies complex task automation
+- ✅ Works with Ollama for free, local, and private AI
 - ✅ Multiple reasoning modes optimize for different scenarios
 - ✅ Extensible tool system supports custom integrations
 - ✅ Production-ready architecture with proper error handling
 - ✅ Comprehensive testing ensures reliability
+- ✅ Easy to switch between local (Ollama) and cloud providers
+
+**Quick Start with Ollama:**
+```bash
+# 1. Install Ollama
+curl -fsSL https://ollama.com/install.sh | sh
+
+# 2. Pull a model
+ollama pull llama3.2
+
+# 3. Configure
+cp .env.example .env
+# Set: OPENAI_API_KEY=ollama, OPENAI_BASE_URL=http://localhost:11434/v1
+
+# 4. Run
+python src/main.py check-setup
+python src/main.py interactive
+```
 
 For questions or support, refer to the official CUGA documentation or join the community channels.
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: December 17, 2024  
+**Document Version**: 1.1
+**Last Updated**: December 17, 2024
 **Author**: Bob (AI Software Engineer)
+**Changes**: Added comprehensive Ollama support and configuration

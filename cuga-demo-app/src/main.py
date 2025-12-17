@@ -70,10 +70,35 @@ class CUGADemo:
         
         table.add_row("Reasoning Mode", self.mode)
         table.add_row("Task Mode", self.task_mode)
-        table.add_row("LLM Provider", os.getenv("AGENT_SETTING_CONFIG", "Not set"))
+        
+        # Detect provider
+        provider = self._detect_provider()
+        table.add_row("LLM Provider", provider)
         table.add_row("Model", os.getenv("MODEL_NAME", "Default"))
         
+        # Show base URL if using Ollama or custom endpoint
+        base_url = os.getenv("OPENAI_BASE_URL", "")
+        if base_url and "localhost" in base_url:
+            table.add_row("Base URL", base_url)
+        
         console.print(table)
+    
+    def _detect_provider(self) -> str:
+        """Detect which LLM provider is being used."""
+        base_url = os.getenv("OPENAI_BASE_URL", "")
+        
+        if "localhost:11434" in base_url or os.getenv("OPENAI_API_KEY") == "ollama":
+            return "Ollama (Local)"
+        elif os.getenv("WATSONX_API_KEY"):
+            return "IBM watsonx"
+        elif os.getenv("AZURE_OPENAI_API_KEY"):
+            return "Azure OpenAI"
+        elif os.getenv("OPENROUTER_API_KEY"):
+            return "OpenRouter"
+        elif os.getenv("OPENAI_API_KEY"):
+            return "OpenAI"
+        else:
+            return "Not configured"
     
     def execute_task(self, task: str) -> dict:
         """
@@ -215,7 +240,25 @@ def check_setup():
     # Check environment variables
     api_key = os.getenv("OPENAI_API_KEY") or os.getenv("WATSONX_API_KEY") or \
               os.getenv("AZURE_OPENAI_API_KEY") or os.getenv("OPENROUTER_API_KEY")
-    checks.append(("API Key", "✓" if api_key else "✗", "green" if api_key else "red"))
+    
+    # For Ollama, API key can be "ollama" (dummy value)
+    is_ollama = os.getenv("OPENAI_API_KEY") == "ollama" or \
+                "localhost:11434" in os.getenv("OPENAI_BASE_URL", "")
+    
+    ollama_running = False
+    if is_ollama:
+        checks.append(("LLM Provider", "Ollama (Local)", "cyan"))
+        # Check if Ollama is accessible
+        import httpx
+        try:
+            response = httpx.get("http://localhost:11434/api/tags", timeout=2.0)
+            ollama_running = response.status_code == 200
+            checks.append(("Ollama Service", "✓ Running" if ollama_running else "✗ Not running",
+                          "green" if ollama_running else "red"))
+        except:
+            checks.append(("Ollama Service", "✗ Not accessible", "red"))
+    else:
+        checks.append(("API Key", "✓" if api_key else "✗", "green" if api_key else "red"))
     
     # Check config files
     config_exists = (project_root / "config" / "settings.toml").exists()
@@ -236,12 +279,22 @@ def check_setup():
     
     console.print(table)
     
-    if not api_key:
+    if is_ollama:
+        if not ollama_running:
+            console.print("\n[yellow]⚠ Warning:[/yellow] Ollama service is not running.")
+            console.print("[yellow]💡 Tip:[/yellow] Start Ollama with: ollama serve")
+            console.print("[yellow]💡 Tip:[/yellow] Or install from: https://ollama.ai")
+        else:
+            console.print("\n[green]✓ Ollama is configured and running![/green]")
+            console.print(f"[cyan]Model:[/cyan] {os.getenv('MODEL_NAME', 'llama3.2')}")
+    elif not api_key:
         console.print("\n[yellow]⚠ Warning:[/yellow] No API key found. "
                      "Please set up your .env file.")
+    
     if not env_exists:
         console.print("\n[yellow]💡 Tip:[/yellow] Copy .env.example to .env "
-                     "and add your API keys.")
+                     "and configure your LLM provider.")
+        console.print("[yellow]💡 Recommended:[/yellow] Use Ollama for free local LLM!")
 
 
 if __name__ == "__main__":
