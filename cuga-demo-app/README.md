@@ -41,6 +41,7 @@ cuga-demo-app/
 ├── README.md                          # This file
 ├── requirements.txt                   # Python dependencies
 ├── .env.example                       # Environment variables template
+├── .gitignore                         # Git ignore rules
 ├── config/
 │   ├── settings.toml                  # Main CUGA configuration
 │   ├── modes/
@@ -54,27 +55,19 @@ cuga-demo-app/
 │   ├── main.py                        # Main application entry point
 │   ├── agents/
 │   │   ├── __init__.py
-│   │   ├── api_agent.py               # API-focused agent
-│   │   ├── web_agent.py               # Web interaction agent
-│   │   └── hybrid_agent.py            # Hybrid mode agent
+│   │   └── api_agent.py               # API-focused agent
 │   ├── tools/
 │   │   ├── __init__.py
 │   │   ├── custom_tools.py            # Custom LangChain tools
 │   │   └── openapi_specs/
-│   │       └── sample_api.yaml        # Sample OpenAPI specification
+│   │       └── crm_api.yaml           # CRM API specification
 │   └── examples/
 │       ├── __init__.py
-│       ├── basic_usage.py             # Basic CUGA usage examples
-│       ├── advanced_usage.py          # Advanced features demo
-│       └── tool_integration.py        # Custom tool integration examples
-├── tests/
-│   ├── __init__.py
-│   ├── test_agents.py                 # Agent tests
-│   └── test_tools.py                  # Tool integration tests
+│       └── basic_usage.py             # Basic CUGA usage examples
 └── docs/
     ├── setup.md                       # Setup instructions
-    ├── usage.md                       # Usage guide
-    └── examples.md                    # Example scenarios
+    ├── BUILD_AND_TEST_GUIDE.md        # Build and testing guide
+    └── OLLAMA_SETUP.md                # Ollama configuration guide
 ```
 
 ## Quick Start
@@ -199,24 +192,39 @@ deactivate
 
 ### Running Examples
 
-#### Basic Usage
+#### Check Setup
+```bash
+python src/main.py check-setup
+```
+
+#### View Available Examples
+```bash
+python src/main.py examples
+```
+
+#### Run a Single Task
+```bash
+python src/main.py run --task "get top 5 accounts by revenue"
+```
+
+#### Interactive Mode
+```bash
+python src/main.py interactive
+```
+
+#### Basic Usage Examples
 ```bash
 python src/examples/basic_usage.py
 ```
 
-#### API Agent
+#### API Agent Demo
 ```bash
 python src/agents/api_agent.py
 ```
 
-#### Web Agent (requires browser extension)
+#### Custom Tools Demo
 ```bash
-python src/agents/web_agent.py
-```
-
-#### Hybrid Agent
-```bash
-python src/agents/hybrid_agent.py
+python src/tools/custom_tools.py
 ```
 
 ## Configuration
@@ -301,14 +309,7 @@ task = "go to the dashboard and extract the latest sales figures"
 result = web_agent.execute(task)
 ```
 
-### 3. Hybrid Operations
-```python
-# Combine API and web operations
-task = "get top account by revenue from API, then add it to current page"
-result = hybrid_agent.execute(task)
-```
-
-### 4. Custom Tool Usage
+### 3. Custom Tool Usage
 ```python
 # Use custom tools
 task = "analyze customer sentiment using my custom NLP tool"
@@ -318,34 +319,61 @@ result = agent.execute(task)
 ## Advanced Features
 
 ### Memory-Enabled Agents
-```bash
-# Enable memory in config/settings.toml
+Enable memory in `config/settings.toml`:
+```toml
+[features]
 enable_memory = true
-
-# Run with memory
-python src/examples/advanced_usage.py --memory
 ```
 
-### Save & Reuse
+### Save & Reuse Mode
+Configure in `config/settings.toml`:
 ```toml
 [features]
 cuga_mode = "save_reuse_fast"
 ```
 
-### Secure Sandbox
+### Secure Sandbox Execution
+Enable in `config/settings.toml`:
+```toml
+[advanced_features]
+use_sandbox = true
+sandbox_runtime = "docker"  # or "podman"
+```
+
+## CLI Commands
+
+The application provides several CLI commands:
+
 ```bash
-# Run with Docker/Podman sandbox
-python src/main.py --sandbox
+# Check if everything is configured correctly
+python src/main.py check-setup
+
+# View example tasks
+python src/main.py examples
+
+# Run a single task
+python src/main.py run --task "your task here"
+python src/main.py run --mode fast --task "quick task"
+
+# Interactive mode
+python src/main.py interactive
+python src/main.py interactive --mode accurate
 ```
 
 ## Testing
 
-```bash
-# Run all tests
-pytest tests/
+Currently, this is a demonstration application. To add tests:
 
-# Run specific test
-pytest tests/test_agents.py
+1. Create a `tests/` directory
+2. Add test files (e.g., `test_agents.py`, `test_tools.py`)
+3. Run with pytest:
+
+```bash
+# Install pytest
+pip install pytest pytest-asyncio pytest-cov
+
+# Run tests (when created)
+pytest tests/
 
 # Run with coverage
 pytest --cov=src tests/
