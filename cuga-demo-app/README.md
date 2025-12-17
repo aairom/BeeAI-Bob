@@ -99,6 +99,17 @@ cuga-demo-app/
 3. **Setup the demo app:**
    ```bash
    cd cuga-demo-app
+   
+   # Create virtual environment
+   python -m venv .venv
+   
+   # Activate virtual environment
+   # On macOS/Linux:
+   source .venv/bin/activate
+   # On Windows:
+   # .venv\Scripts\activate
+   
+   # Copy environment template
    cp .env.example .env
    ```
 
@@ -123,20 +134,31 @@ cuga-demo-app/
 
 ### Option B: Using Cloud Providers (OpenAI, watsonx, etc.)
 
-1. **Clone and setup:**
+1. **Setup virtual environment:**
    ```bash
    cd cuga-demo-app
+   
+   # Create virtual environment
+   python -m venv .venv
+   
+   # Activate virtual environment
+   # On macOS/Linux:
+   source .venv/bin/activate
+   # On Windows:
+   # .venv\Scripts\activate
+   
+   # Copy environment template
    cp .env.example .env
    # Edit .env with your API keys
    ```
 
 2. **Install dependencies:**
    ```bash
-   # Using uv (recommended)
-   uv sync
-   
-   # Or using pip
+   # Using pip (recommended)
    pip install -r requirements.txt
+   
+   # Or using uv (faster)
+   uv sync
    ```
 
 3. **Configure CUGA:**
@@ -145,10 +167,35 @@ cuga-demo-app/
 ### Prerequisites
 
 - Python 3.12+
-- uv (recommended) or pip
+- pip or uv (for package management)
 - **For Ollama**: Ollama installed locally (free!)
 - **For Cloud**: API keys for your chosen LLM provider
 - Docker/Podman (optional, for sandbox execution)
+
+### Virtual Environment Management
+
+**Create and activate:**
+```bash
+# Create
+python -m venv .venv
+
+# Activate on macOS/Linux
+source .venv/bin/activate
+
+# Activate on Windows
+.venv\Scripts\activate
+```
+
+**Deactivate when done:**
+```bash
+deactivate
+```
+
+**Why use a virtual environment?**
+- Isolates project dependencies
+- Prevents conflicts with system Python packages
+- Makes the project portable and reproducible
+- Recommended best practice for Python projects
 
 ### Running Examples
 
