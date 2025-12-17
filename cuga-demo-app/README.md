@@ -139,7 +139,7 @@ AGENT_SETTING_CONFIG="settings.openai.toml"
 MODEL_NAME=gpt-4o
 ```
 
-#### IBM WatsonX
+#### IBM watsonx
 ```env
 WATSONX_API_KEY=your-api-key
 WATSONX_PROJECT_ID=your-project-id
