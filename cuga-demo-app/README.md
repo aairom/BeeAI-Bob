@@ -14,7 +14,7 @@ This application demonstrates how to integrate and use CUGA for building intelli
 ## Features Demonstrated
 
 ### 1. **Basic CUGA Integration**
-- Setting up CUGA with different LLM providers (OpenAI, WatsonX, Azure, OpenRouter)
+- Setting up CUGA with different LLM providers (OpenAI, watsonx, Azure, OpenRouter)
 - Configuring agent modes and reasoning strategies
 - Managing environment variables and configurations
 
