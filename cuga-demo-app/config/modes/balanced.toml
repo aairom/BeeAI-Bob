@@ -1,0 +1,29 @@
+# CUGA Balanced Mode Configuration
+# Balance between speed and precision (default mode)
+
+[agent]
+max_iterations = 20
+timeout_seconds = 300
+enable_reflection = true
+enable_planning = true
+
+[planner]
+max_plan_depth = 5
+enable_dynamic_planning = true
+planning_strategy = "hierarchical"
+use_lightweight_planner = false
+
+[executor]
+max_retries = 3
+retry_delay_seconds = 2
+enable_error_recovery = true
+fast_fail = false
+
+[code_agent]
+max_execution_time = 30
+enable_optimization = true
+
+[performance]
+enable_caching = true
+cache_ttl_seconds = 3600
+parallel_execution = false

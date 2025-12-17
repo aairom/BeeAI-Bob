@@ -1,0 +1,259 @@
+openapi: 3.0.0
+info:
+  title: CRM API
+  description: Customer Relationship Management API for CUGA demo
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: https://api.example.com/crm/v1
+    description: Production server
+  - url: https://api-staging.example.com/crm/v1
+    description: Staging server
+
+paths:
+  /accounts:
+    get:
+      summary: List all accounts
+      description: Retrieve a list of all CRM accounts with optional filtering and sorting
+      operationId: listAccounts
+      tags:
+        - Accounts
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of accounts to return
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          description: Number of accounts to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Field to sort by
+          required: false
+          schema:
+            type: string
+            enum: [name, revenue, created_at, updated_at]
+            default: name
+        - name: order
+          in: query
+          description: Sort order
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+        - name: industry
+          in: query
+          description: Filter by industry
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accounts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Account'
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+  /accounts/{accountId}:
+    get:
+      summary: Get account by ID
+      description: Retrieve detailed information about a specific account
+      operationId: getAccount
+      tags:
+        - Accounts
+      parameters:
+        - name: accountId
+          in: path
+          description: Account ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '404':
+          description: Account not found
+        '401':
+          description: Unauthorized
+
+  /accounts/{accountId}/contacts:
+    get:
+      summary: Get account contacts
+      description: Retrieve all contacts associated with an account
+      operationId: getAccountContacts
+      tags:
+        - Accounts
+        - Contacts
+      parameters:
+        - name: accountId
+          in: path
+          description: Account ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contacts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Contact'
+                  total:
+                    type: integer
+        '404':
+          description: Account not found
+
+  /contacts:
+    get:
+      summary: List all contacts
+      description: Retrieve a list of all contacts
+      operationId: listContacts
+      tags:
+        - Contacts
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contacts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Contact'
+                  total:
+                    type: integer
+
+components:
+  schemas:
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique account identifier
+        name:
+          type: string
+          description: Account name
+        revenue:
+          type: number
+          format: double
+          description: Annual revenue
+        industry:
+          type: string
+          description: Industry sector
+        website:
+          type: string
+          format: uri
+          description: Company website
+        employees:
+          type: integer
+          description: Number of employees
+        created_at:
+          type: string
+          format: date-time
+          description: Account creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+      required:
+        - id
+        - name
+
+    Contact:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique contact identifier
+        account_id:
+          type: integer
+          description: Associated account ID
+        first_name:
+          type: string
+          description: Contact first name
+        last_name:
+          type: string
+          description: Contact last name
+        email:
+          type: string
+          format: email
+          description: Contact email address
+        phone:
+          type: string
+          description: Contact phone number
+        role:
+          type: string
+          description: Job title or role
+        created_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - account_id
+        - email
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
+# Made with Bob

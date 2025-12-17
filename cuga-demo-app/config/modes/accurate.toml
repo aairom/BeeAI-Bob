@@ -1,0 +1,37 @@
+# CUGA Accurate Mode Configuration
+# Optimized for precision with deep planning and reflection
+
+[agent]
+max_iterations = 30
+timeout_seconds = 600
+enable_reflection = true
+enable_planning = true
+
+[planner]
+max_plan_depth = 8
+enable_dynamic_planning = true
+planning_strategy = "hierarchical"
+use_lightweight_planner = false
+enable_plan_verification = true
+
+[executor]
+max_retries = 5
+retry_delay_seconds = 3
+enable_error_recovery = true
+fast_fail = false
+enable_detailed_logging = true
+
+[code_agent]
+max_execution_time = 60
+enable_optimization = true
+enable_code_review = true
+
+[performance]
+enable_caching = true
+cache_ttl_seconds = 1800
+parallel_execution = false
+
+[safety]
+enable_input_validation = true
+enable_output_validation = true
+enable_intermediate_checks = true

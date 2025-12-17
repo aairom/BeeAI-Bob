@@ -1,0 +1,100 @@
+# CUGA Demo Application - Main Configuration File
+# This file demonstrates CUGA's configuration structure
+
+[features]
+# Reasoning mode: fast, balanced, accurate, custom, save_reuse_fast
+cuga_mode = "balanced"
+
+# Enable experimental features
+enable_memory = false
+enable_save_reuse = false
+
+[advanced_features]
+# Task execution mode: api, web, hybrid
+mode = "api"
+
+# Enable code sandbox for secure execution
+use_sandbox = false
+sandbox_runtime = "docker"  # docker or podman
+
+[demo_mode]
+# Starting URL for hybrid mode demonstrations
+start_url = "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"
+
+# Demo scenarios
+enable_demo_tools = true
+
+[agent]
+# Agent behavior settings
+max_iterations = 20
+timeout_seconds = 300
+enable_reflection = true
+enable_planning = true
+
+[planner]
+# Planning agent configuration
+max_plan_depth = 5
+enable_dynamic_planning = true
+planning_strategy = "hierarchical"  # hierarchical, sequential, parallel
+
+[executor]
+# Execution agent configuration
+max_retries = 3
+retry_delay_seconds = 2
+enable_error_recovery = true
+
+[code_agent]
+# Code execution settings
+enable_code_execution = true
+max_execution_time = 30
+allowed_imports = [
+    "pandas",
+    "numpy",
+    "requests",
+    "json",
+    "datetime",
+    "math",
+    "re"
+]
+
+[tools]
+# Tool configuration
+enable_openapi_tools = true
+enable_mcp_tools = true
+enable_langchain_tools = true
+
+# Tool registry path
+tool_registry_path = "config/tools/mcp_servers.yaml"
+
+[memory]
+# Memory configuration (when enabled)
+memory_backend = "local"  # local, redis, chromadb
+memory_path = "./data/memory"
+max_memory_items = 1000
+
+[logging]
+# Logging configuration
+level = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+log_to_file = true
+log_file_path = "./logs/cuga-demo.log"
+
+[performance]
+# Performance tuning
+enable_caching = true
+cache_ttl_seconds = 3600
+parallel_execution = false
+max_parallel_tasks = 3
+
+[safety]
+# Safety and alignment settings
+enable_input_validation = true
+enable_output_validation = true
+max_tool_calls_per_task = 50
+enable_human_in_loop = false
+
+[ui]
+# User interface settings
+enable_rich_output = true
+show_progress_bar = true
+verbose_mode = false

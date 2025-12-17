@@ -1,0 +1,116 @@
+# CUGA Tool Registry Configuration
+# Configure OpenAPI specs, MCP servers, and custom tools
+
+# OpenAPI Tools
+openapi_tools:
+  # Example: CRM API
+  - name: "crm_api"
+    description: "Customer Relationship Management API"
+    spec_path: "src/tools/openapi_specs/crm_api.yaml"
+    enabled: true
+    
+  # Example: Sales API
+  - name: "sales_api"
+    description: "Sales and Revenue Management API"
+    spec_path: "src/tools/openapi_specs/sales_api.yaml"
+    enabled: true
+    
+  # Example: Analytics API
+  - name: "analytics_api"
+    description: "Business Analytics and Reporting API"
+    spec_path: "src/tools/openapi_specs/analytics_api.yaml"
+    enabled: false
+
+# MCP (Model Context Protocol) Servers
+mcp_servers:
+  # Example: File System MCP
+  - name: "filesystem"
+    description: "File system operations"
+    command: "npx"
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - "/path/to/allowed/directory"
+    enabled: true
+    
+  # Example: Database MCP
+  - name: "database"
+    description: "Database query and management"
+    command: "python"
+    args:
+      - "-m"
+      - "mcp_server_database"
+      - "--connection-string"
+      - "${DATABASE_URL}"
+    enabled: false
+    env:
+      DATABASE_URL: "postgresql://localhost/mydb"
+    
+  # Example: Web Search MCP
+  - name: "web_search"
+    description: "Web search capabilities"
+    command: "npx"
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-brave-search"
+    enabled: false
+    env:
+      BRAVE_API_KEY: "${BRAVE_API_KEY}"
+    
+  # Example: GitHub MCP
+  - name: "github"
+    description: "GitHub repository operations"
+    command: "npx"
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-github"
+    enabled: false
+    env:
+      GITHUB_TOKEN: "${GITHUB_TOKEN}"
+
+# LangChain Tools
+# These are loaded directly in Python code
+langchain_tools:
+  - name: "custom_calculator"
+    module: "src.tools.custom_tools"
+    class: "CalculatorTool"
+    enabled: true
+    
+  - name: "sentiment_analyzer"
+    module: "src.tools.custom_tools"
+    class: "SentimentAnalyzerTool"
+    enabled: true
+    
+  - name: "data_processor"
+    module: "src.tools.custom_tools"
+    class: "DataProcessorTool"
+    enabled: false
+
+# Tool Categories
+tool_categories:
+  crm:
+    - "crm_api"
+  sales:
+    - "sales_api"
+    - "analytics_api"
+  filesystem:
+    - "filesystem"
+  web:
+    - "web_search"
+  development:
+    - "github"
+  utilities:
+    - "custom_calculator"
+    - "sentiment_analyzer"
+    - "data_processor"
+
+# Global Tool Settings
+settings:
+  max_concurrent_tools: 5
+  tool_timeout_seconds: 30
+  enable_tool_caching: true
+  cache_ttl_seconds: 3600
+  retry_failed_tools: true
+  max_tool_retries: 3
+
+# Made with Bob

@@ -1,0 +1,29 @@
+# CUGA Fast Mode Configuration
+# Optimized for speed with minimal planning overhead
+
+[agent]
+max_iterations = 10
+timeout_seconds = 120
+enable_reflection = false
+enable_planning = true
+
+[planner]
+max_plan_depth = 2
+enable_dynamic_planning = false
+planning_strategy = "sequential"
+use_lightweight_planner = true
+
+[executor]
+max_retries = 2
+retry_delay_seconds = 1
+enable_error_recovery = true
+fast_fail = true
+
+[code_agent]
+max_execution_time = 15
+enable_optimization = false
+
+[performance]
+enable_caching = true
+cache_ttl_seconds = 7200
+parallel_execution = false
